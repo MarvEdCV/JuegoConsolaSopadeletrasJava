@@ -1,0 +1,524 @@
+
+package practica1_1;
+
+import java.util.Scanner; 
+
+public class Practica1_1 {
+    
+    //Declarando variables globales para utilizar en diferentes metodos y funciones
+    static int c=1;
+    static int err;
+    static int numPalabras;
+    static String nombresUsuarios[] = new String[c];
+    static int N;
+    static String vectorPalabras[];
+    static char matrizSopa[][];
+    static String palabrasEnVectores[][];
+    static char caracteres[];
+    static int numAleatorio;
+    static char caracteresPalabras[];
+    static String palabra1;
+    static int ver;
+    
+    public static void main(String[] args) {
+        menuPrincipal();
+        
+    }
+            //Muestra el menu principal y lee la opcion que requiera el jugador  
+          static void menuPrincipal(){
+      Scanner reader=new Scanner(System.in);
+      int seleccionMenu;
+      //si ingresa un numero invalido retornara al menu hasta que ingrese algo valido
+      do{
+      System.out.println("****************************************\n Bienvenido a mi juego SOPA DE LETRAS\n****************************************\n"
+              + " Ingresa la opcion que deseas utilizar\n 1) Nueva Partida\n 2) Historial de Partidas\n 3) Mejores puntuaciones\n 4) Jugarodes que no "
+              + "encontraron "
+              + "todas las palabras\n"
+              + " 5) Jugadores que encontraron todas las palabras\n 6) Informacion creador\n 7) Salir    ");
+      seleccionMenu= reader.nextInt();
+          System.out.println("");
+      }
+     while(seleccionMenu<1 || seleccionMenu>7);
+     switch(seleccionMenu){
+          case 1:
+            // Pide que ingresen nombre del jugador y lo guarda en un vector
+            System.out.println("Ingrese nombre de usuario");
+            for(c = 0; c<nombresUsuarios.length; c++){
+                nombresUsuarios[c] = reader.next();
+            }
+            System.out.println("");
+            
+            // comienza lectura de numero para matriz N*N 
+            do
+            {
+            System.out.println("Ingrese un numero para definir el tamaño de su tablero, tiene que ser mayor o igual a 5 "); 
+            N = reader.nextInt(); 
+            System.out.println("");
+            }
+            // si el numero es menor que 5 regresara y preguntara de nuevo
+            while(N < 5);
+            menu_nuevaPartida();
+               break;
+           
+          case 2:
+           
+             break;
+           
+          case 3:
+        
+              break;
+              
+          case 4:
+
+              break;
+              
+          case 5:
+        
+              break;
+              
+          case 6:
+              informacion();
+     
+              break;
+              
+          case 7:
+    
+              break;
+              
+      }         
+  }
+          // Muestra un sub-menu del menu principal 
+           static void menu_nuevaPartida(){
+           Scanner reader= new Scanner(System.in);
+            int seleccionMenu2;
+            
+            do {
+                System.out.println("********************\n   Nueva Partida\n********************\n1:Menu Palabras\n2:Jugar\n3:Terminar Partida");
+                seleccionMenu2 = reader.nextInt();
+                System.out.println("");
+            }
+            while(seleccionMenu2<1 || seleccionMenu2>3);
+            switch(seleccionMenu2){
+                case 1:
+                    menu_menupalabras();
+                    break;
+                    
+                case 2:
+                    jugar();
+                    break;
+                 
+                
+                case 3:
+                    menuPrincipal();
+                    break;
+                    
+      }
+      }
+                      //tercer menu dentro de nueva partida y dentro de menu palabras
+      static void menu_menupalabras(){
+           Scanner reader= new Scanner(System.in);
+            int seleccionMenu3;
+            
+            do {
+                System.out.println("********************\n   Menu Palabras\n********************\n1:Insertar\n2:Insertar todas\n3:Modificar\n4:Eliminar\n5:Salir");
+                seleccionMenu3 = reader.nextInt();
+                System.out.println("");
+            }
+            while(seleccionMenu3<1 || seleccionMenu3>5);
+            switch(seleccionMenu3){
+                case 1:
+               insertar();
+               
+                    break;
+                    
+                case 2:
+               insertarPalabras();
+                    break;
+                    
+                case 3:
+                    modificar();
+                    break;
+                    
+                case 4:
+                    eliminar();
+                    break;
+                    
+                case 5:
+                    menu_nuevaPartida();
+                    break;
+            }      
+      }
+        //Retorna  un vector con el abecedario en una posicion aleatoria 
+        static char abc(){
+        char abecedario[] = {'A','B','C','D','E','F','G','H','I','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+        double numeroAleatorio = Math.random()*(abecedario.length-1);
+        int posicion = (int) Math.floor(numeroAleatorio);
+        return abecedario[posicion];
+        }
+      //lleno la matriz de N*N con letras aleatorias 
+      static void matrizAleatoria(){
+        matrizSopa = new char [N][N];
+          for(int a = 0; a<matrizSopa.length; a++){
+            for(int b = 0; b<matrizSopa.length; b++){
+          matrizSopa[a][b] = abc();
+                }
+            }
+     }
+
+      //insertacion de palabras y creacion de vector con todas las palabras 
+      static void insertar(){
+          Scanner reader= new Scanner(System.in);
+          Scanner reader1= new Scanner(System.in);
+
+          String palabras;
+          System.out.println("Ingrese el numero de palabras que desea insertar para jugar ");
+          numPalabras = reader.nextInt();
+          System.out.println("\nIngrese  "  + numPalabras + "  palabras de 5 o mas caracteres para ingresar a la sopa de letras");
+          llenarVectorPalabras();
+          
+          menu_menupalabras();
+          
+          
+         }
+      //llena mi banco de palabras leyendo cada una de ellas ingresadas por el usuario
+        static void llenarVectorPalabras(){
+          Scanner reader = new Scanner(System.in);
+           int x; 
+          String aux;
+                    vectorPalabras= new String[numPalabras];
+          for (x=0;x<vectorPalabras.length;x++){
+              aux=reader.next();
+              if(aux.length()<5){//SOLUCIONAR ERROR DE QUE SI LA PRIMERA PALABRA NO CUMPLE SE CAGA TODO
+                  System.out.println("la palabra numero es menor de 5 caracteres, escribirla de nuevo");
+                  x=x-1;
+              }
+              vectorPalabras[x] = aux;
+              }
+      }
+      //genera un numero aleatorio de 0 al numero de la matriz para utilizarlo luego en la llenada de la matriz con palabras
+      
+        static int numAleatorio(){
+        double n;
+        n =Math.random()*N;
+        int n1; 
+        n1= (int) Math.floor(n);
+        if(n1==0){ 
+            n1=1;
+        }
+        return n1;
+      }
+      //Creo un numero aleatorio de 1 a 4 para que entren al switch de diferentes casos de posiciones de palabras
+           static int num(){
+           double n;
+           n = (Math.random()*3)+1;
+           int num;
+           return num = (int) Math.floor(n);
+      }
+        // Este metodo muestra todas las palabras que se quieren insertar en la matriz separadas por un signo de dolar
+       // y ademas ve si las palabras caben en la matriz y las coloca aleatoriamente.
+          static void insertarPalabras(){
+          int x,i,j,k,z,j1,k1,p,p1;
+          String aux;
+          matrizAleatoria();
+          int a,b;
+          for(int t=0; t<vectorPalabras.length;t++){
+              if (t== vectorPalabras.length-1){
+                  System.out.println(vectorPalabras[t]+"");
+              }
+              else{
+                  System.out.print(vectorPalabras[t]+"$");
+              }
+          }
+          
+          // Convierto cada posicion del banco de palabras a un vector de caracteres cada una.
+          for(i = 0; i < vectorPalabras.length; i++){
+              caracteres = new char[vectorPalabras[i].length()];
+              aux = vectorPalabras[i];
+             caracteres = aux.toCharArray();
+           switch(num()){
+               //Ingresa palabras de izquierda a derecha
+               case 1:
+                   j = numAleatorio();
+               do{
+                 k = numAleatorio();  
+               }
+               while(caracteres.length > N-k);
+                for(p = 0;p < caracteres.length; p++){
+                    matrizSopa[j][k] = caracteres[p];
+                    k++;
+                }           
+                   break;
+                //Ingresa palabras de derecha a izquierda   
+               case 2:
+                  j1 = numAleatorio(); 
+                  do{
+                      k1 = numAleatorio();
+                  }
+                  while(caracteres.length> N-k1);
+                 for(p1 = caracteres.length-1;p1>=0;p1--){
+                      matrizSopa[j1][k1]= caracteres[p1];
+                      k1++;
+                  }
+                   break;
+                 //ingresa palabras de arriba hacia abajo
+               case 3:
+                   k = numAleatorio();
+                   do{
+                       j=numAleatorio();
+                   }
+                   while(caracteres.length> N-j);
+                   for(p = 0;p<caracteres.length; p++){
+                       matrizSopa[j][k] = caracteres[p];
+                       j++;
+                   }
+                   break;
+                //ingresa palabras de abajo hacia arriba   
+               case 4:
+                     k1 = numAleatorio(); 
+                  do{
+                      j1 = numAleatorio();
+                  }
+                  while(caracteres.length> N-j1);
+                 for(p1 = caracteres.length-1;p1>=0;p1--){
+                      matrizSopa[j1][k1]= caracteres[p1];
+                      j1++;
+                        
+                  }
+                   break;
+           }
+           }
+          menu_nuevaPartida();
+}
+          // al momento de que todas las palabras ingresen a la matriz de sopa de letras en jugar la imprimo y el usuario debe escribir las que encuentre para continuar con el juego
+          static void jugar(){
+              Scanner reader = new Scanner(System.in);
+              
+              for(int a = 0; a < matrizSopa.length; a++){
+                    for(int b = 0; b< matrizSopa.length; b++){
+                        System.out.print(matrizSopa[a][b] +" | ");
+                    }
+                    System.out.println();
+                }
+              System.out.println("\n\n\n");
+             
+              
+              System.out.println("Si encuentre una palabra, escribala");
+
+              
+              for(int q=0; q<vectorPalabras.length+3; q++){
+                if( err < 3){
+                  
+                String palabra= reader.next();
+                palabra1 = palabra;
+                int cont=1;
+                ver=0;
+                caracteresPalabras = palabra1.toCharArray();
+                do{
+                switch(cont){
+                    case 1:             
+                   for(int x = 0;x < matrizSopa.length; x++){
+                    for(int y = 0; y <matrizSopa[x].length; y++){
+                     int cc=0;
+                     do{
+                         if(matrizSopa[x][y+cc] == caracteresPalabras[cc]){
+                         cc++;
+                         if( cc == caracteresPalabras.length){
+                             for(int d=0;d<caracteresPalabras.length;d++){
+                                 matrizSopa[x][y+d]='$';
+                                 if(matrizSopa[x][y+d]=='$'){
+                                     ver=1;
+                                 }
+                                 else{ ver=0;
+                                     
+                                 }
+                             }
+                         }
+                     }
+                     else{
+                         cc=caracteresPalabras.length;
+                     }
+                     }
+                     while(cc<caracteresPalabras.length);
+                 }
+                    
+                    
+                    }
+                  
+             
+                        
+                   
+                   break;
+                    case 2:
+                   for(int x = 0;x < matrizSopa.length; x++){
+                    for(int y = matrizSopa[x].length-1; y >=0; y--){
+                     int cc=0;
+                     do{
+                         if(matrizSopa[x][y-cc] == caracteresPalabras[cc]){
+                         cc++;
+                         if( cc == caracteresPalabras.length){
+                             for(int d=0;d<caracteresPalabras.length;d++){
+                                 matrizSopa[x][y-d]='$';
+                                 if(matrizSopa[x][y-d]=='$'){
+                                     ver=1;
+                                 }
+                                 else{ver=0;
+                   
+                                 }
+                             }
+                         }
+                     }
+                     else{
+                         cc=caracteresPalabras.length;
+                     }
+                     }
+                     while(cc<caracteresPalabras.length);
+                 }
+                    
+             }                        
+                        
+                        
+                        break;
+                        
+                        case 3:
+                   
+                   for(int x = 0;x < matrizSopa.length; x++){
+                    for(int y = 0; y <matrizSopa[x].length; y++){
+                     int cc=0;
+                     do{
+                         if(matrizSopa[x+cc][y] == caracteresPalabras[cc]){
+                         cc++;
+                         if( cc == caracteresPalabras.length){
+                             for(int d=0;d<caracteresPalabras.length;d++){
+                                 matrizSopa[x+d][y]='$';
+                                 if(matrizSopa[x+d][y]=='$'){
+                                            ver=1;                          }
+                                 else{ ver=0;
+                                     
+                                 }
+                             }
+                         }
+                     }
+                     else{
+                         cc=caracteresPalabras.length;
+                     }
+                     }
+                     while(cc<caracteresPalabras.length);
+                 }
+  
+             }
+                        break;
+                        
+                    case 4:
+                    for(int x =matrizSopa.length-1;x >=0; x--){
+                    for(int y = 0; y <matrizSopa[x].length; y++){
+                     int cc=0;
+                     do{
+                         if(matrizSopa[x-cc][y] == caracteresPalabras[cc]){
+                         cc++;
+                         if( cc == caracteresPalabras.length){
+                             for(int d=0;d<caracteresPalabras.length;d++){
+                                 matrizSopa[x-d][y]='$';
+                                 if(matrizSopa[x-d][y]=='$'){
+                                     ver=1;
+                                 }
+                                 else{ver=0;
+                                     
+                                 }
+                             }
+                         }
+                     }
+                     else{
+                         cc=caracteresPalabras.length;
+                     }
+                     }
+                     while(cc<caracteresPalabras.length);
+                 }
+                   
+             }                        
+                        break;
+                        
+                    default:
+                        System.out.println("su palabra no se encuentra");
+                         
+                }
+                
+                cont++;
+                }
+                while(cont<5);
+                
+                if(ver==0){
+                    System.out.println("");
+                    System.out.println("--------------------\n       ERROR\n--------------------");
+                    err = err+1;
+                }
+                
+             
+            for(int x=0;x<matrizSopa.length;x++){
+                for(int y = 0;y<matrizSopa[x].length; y++){
+                    System.out.print(matrizSopa[x][y]+" | ");
+                }
+                System.out.println("");
+            }
+                }
+                else{
+                    System.out.println("--------------------\nPERDISTE LA PARTIDA\n--------------------");
+                }
+              }
+          }
+          
+                static void modificar(){
+              Scanner reader = new Scanner(System.in);
+              String m,m1;
+              int a=0;
+              System.out.println("Ingrese palabra a modificar");
+              m = reader.next();
+              m1="";
+              do{
+                  if(m.equalsIgnoreCase(vectorPalabras[a])){
+                      System.out.println("Ingrese palabra nueva");
+                      m1= reader.next();
+                      System.out.println("");
+                      vectorPalabras[a]=m1;
+                      a = vectorPalabras.length;
+                  }
+                  else{
+                      a++;
+                  }
+              }
+              while(a<vectorPalabras.length);
+              if(m1.equalsIgnoreCase("")){
+                  System.out.println("La palabra no se encuentra en el banco de palabras");
+              }
+              System.out.println("");
+              menu_menupalabras();
+          }
+          
+          static void eliminar(){
+              Scanner reader = new Scanner(System.in);
+              System.out.println("Ingrese la palabra que desea eliminar");
+              String elim = reader.next();
+              boolean eliminado=false;
+              for(int i = 0; i<vectorPalabras.length;i++){
+                  if(vectorPalabras[i].equalsIgnoreCase(elim)){
+                      vectorPalabras[i]="";
+                      eliminado=true;
+                      System.out.println("Palabra eliminada");
+                      break;
+                  }
+              } 
+              if(eliminado==false){
+                  System.out.println("la palabra "+elim+" no se ha encontrado");
+              }
+              menu_menupalabras();
+          }
+      
+       static void informacion(){
+
+      System.out.println("Nombre: Marvin Eduardo Catalan Veliz");
+      System.out.println("Carnet: 201905554");
+      System.out.println("Seccion: D");
+      System.out.println("");
+      
+  }
+          
+}
